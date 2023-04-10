@@ -33,10 +33,10 @@ const styles = StyleSheet.create({
         zIndex: 999
     },
     dialogContainer: {
-        height: '90%',
         width: '90%',
         backgroundColor: '#fff',
-        borderRadius: 20,
+        borderRadius: 10,
+        padding: 15,
         justifyContent: 'center',
         alignItems: 'center',
     }

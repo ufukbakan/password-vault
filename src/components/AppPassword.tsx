@@ -62,8 +62,8 @@ export default function (props: AppPasswordProps) {
     return (
         <TouchableOpacity onPress={props.onClick}>
             <Hstack style={style.appPassRow}>
-                <Hstack style={{gap: 10}}>
-                    <Image source={{uri: appLogos.get(props.data.app)}} style={{width: 32, height: 32}} />
+                <Hstack style={{ gap: 10 }}>
+                    <Image source={{ uri: appLogos.get(props.data.app) }} style={{ width: 32, height: 32 }} />
                     <Text>{props.data.name}</Text>
                 </Hstack>
                 <Ionicons name="eye" size={24} color="black" />

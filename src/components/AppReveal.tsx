@@ -30,7 +30,7 @@ export default function (props: AppRevealProps) {
             </Hstack>
             <Hstack>
                 <Text style={styles.appName}>Şifre:</Text>
-                <Text style={styles.password}>{app.password}</Text>
+                <Text style={styles.password} selectable>{app.password}</Text>
             </Hstack>
             <Hstack style={{ gap: 15 }}>
                 <Button title="Şifreyi Kopyala" onPress={copyPassword} />
@@ -62,6 +62,6 @@ const styles = StyleSheet.create({
         fontWeight: "bold"
     },
     deleteButton: {
-        marginBottom: 150
+        marginBottom: 10
     }
 });

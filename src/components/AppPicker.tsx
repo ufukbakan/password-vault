@@ -12,9 +12,12 @@ type AppPickerProps = {
 
 export default function (props: AppPickerProps) {
 
-    // const [selectedValue, setSelectedValue] = useState<SupportedApp>("binance");
     const [inputValue, setInputValue] = useState('');
     const filteredApps = inputValue.length > 0 ? supportedApps.filter(app => app.toLowerCase().replaceAll(" ", "").includes(inputValue.toLowerCase().trim().replaceAll(" ", ""))) : supportedApps;
+    function onFilterChange(value: string) {
+        setInputValue(value);
+        props.onChange(filteredApps[0] as SupportedApp);
+    }
     return (
         <>
             <Text>Uygulama Seçiniz</Text>
@@ -22,7 +25,7 @@ export default function (props: AppPickerProps) {
                 placeholder="Uygulama aramak için yazınız"
                 style={globalStyles.input}
                 value={inputValue}
-                onChangeText={setInputValue}
+                onChangeText={onFilterChange}
             />
             <View style={{...globalStyles.input, display: "flex", height: 50, "alignItems": "flex-start", justifyContent: "flex-start", padding: 0}} >
                 <Picker
