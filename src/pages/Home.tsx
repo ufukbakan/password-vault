@@ -1,12 +1,13 @@
+import * as LocalAuthentication from 'expo-local-authentication';
 import React, { useEffect, useState } from "react";
-import { FlatList, Platform, SafeAreaView, StatusBar, StyleSheet, Text, TouchableOpacity, View } from "react-native";
-import RecordAdder from "../components/RecordAdder";
+import { Alert, AppState, AppStateStatus, BackHandler, FlatList, Platform, SafeAreaView, StatusBar, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import AppPassword, { AppPasswordRecord } from "../components/AppPassword";
+import AppReveal from "../components/AppReveal";
 import Dialog from "../components/Dialog";
 import MyHeader from "../components/MyHeader";
-import { getData } from "../utils/storage-utils";
+import RecordAdder from "../components/RecordAdder";
 import { useMyContext } from "../utils/hooks";
-import AppReveal from "../components/AppReveal";
+import { getData } from "../utils/storage-utils";
 
 export default function Home() {
 
@@ -16,10 +17,35 @@ export default function Home() {
     const recordAdderDialog = <RecordAdder onAdd={addApp} visible={isDialogVisible} close={() => setDialogVisible(false)} />;
     const [dialogContent, setDialogContent] = useState<JSX.Element>(recordAdderDialog);
 
+    function exitApp() {
+        Alert.alert("Uygulamayı kullanmak için biyometrik doğrulama gerekli", undefined, [
+            {
+                text: "Ok",
+                onPress: () => BackHandler.exitApp()
+            }
+        ]);
+    }
+
+    function handleAppStateChange(nextAppState: AppStateStatus) {
+        if (AppState.currentState == "background" && nextAppState == "active") {
+            LocalAuthentication.authenticateAsync({ "promptMessage": "Doğrulama gerekli", fallbackLabel: "Doğrulama metodunu değiştir" })
+                .then(auth => {
+                    if (auth.success) {
+                        getData('storedPasswords').then(data => {
+                            data && context.set({ records: JSON.parse(data) as AppPasswordRecord[] });
+                        });
+                    } else {
+                        exitApp();
+                    }
+                })
+                .catch(() => {
+                    exitApp();
+                });
+        }
+    }
+
     useEffect(() => {
-        getData('storedPasswords').then(data => {
-            data && context.set({ records: JSON.parse(data) as AppPasswordRecord[] });
-        });
+        AppState.addEventListener("change", handleAppStateChange);
     }, []);
 
     function revealApp(app: AppPasswordRecord) {
@@ -92,13 +118,17 @@ const styles = StyleSheet.create({
         borderRadius: 25,
         width: 50,
         height: 50,
+        display: "flex",
         justifyContent: 'center',
         alignItems: 'center',
     },
     buttonText: {
         color: 'white',
         fontWeight: 'bold',
-        fontSize: 40,
-        lineHeight: 39,
+        fontSize: 30,
+        textAlign: 'center',
+        lineHeight: 50,
+        width: 50,
+        height: 50,
     }
 });

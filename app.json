@@ -31,6 +31,14 @@
       "eas": {
         "projectId": "4bc963c1-e7d3-4e43-b4b3-e8b50e317705"
       }
-    }
+    },
+    "plugins": [
+      [
+        "expo-local-authentication",
+        {
+          "faceIDPermission": "Allow $(PRODUCT_NAME) to use Face ID."
+        }
+      ]
+    ]
   }
 }

@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import { useContext } from "react";
-import { AppPasswordRecord } from "src/components/AppPassword";
+import { AppPasswordRecord } from "../components/AppPassword";
 import { saveData } from "./storage-utils";
 
 export type ContextValue = {
@@ -19,12 +19,13 @@ var MyContext = React.createContext(initialValues);
 export function ContextProvider({ children }: { children: React.ReactNode }) {
     var [value, setValue] = React.useState(initialValues.get());
 
-    useEffect(() => {
-        saveData("storedPasswords", value.records);
-    }, [value.records]);
-
     return (
-        <MyContext.Provider value={{ get: () => value, set: setValue }}>
+        <MyContext.Provider value={{
+            get: () => value, set: (c: ContextValue) => {
+                setValue(c);
+                saveData("storedPasswords", c.records);
+            }
+        }}>
             {children}
         </MyContext.Provider>
     );
